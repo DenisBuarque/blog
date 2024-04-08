@@ -1,4 +1,4 @@
-const Sequelize = require('sequeilze');
+const Sequelize = require('sequelize');
 const connection = require('../database/connection');
 
 const Category = connection.define('categories', {
@@ -11,5 +11,8 @@ const Category = connection.define('categories', {
         allowNull: false
     }
 });
+
+//Create table database
+//Category.sync({force: true});
 
 module.exports = Category;
