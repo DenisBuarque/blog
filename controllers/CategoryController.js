@@ -32,4 +32,19 @@ router.post("/store", (req, res) => {
   });
 });
 
+router.delete('/delete/:id', (req, res) => {
+  const id = req.params.id;
+
+  if(id === undefined || isNaN(id)) {
+    res.send("Id inválido");
+    return;
+  }
+
+  Category.destroy({ where: {id: id}}).then(() => {
+    res.send("Categoria excluída com sucesso!");
+  }).catch((error) => {
+    console.log(error);
+  });
+})
+
 module.exports = router;
