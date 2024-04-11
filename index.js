@@ -25,7 +25,9 @@ app.use('/categories', CategoryController);
 app.use('/articles', ArticleController);
 
 app.use('/', (req, res) => {
-    res.send('Bem-vindo ao Blog Guia Press');
+    Article.findAll({ raw: true }).then((articles) => {
+        res.status(200).json({ articles });
+    });
 });
 
 app.listen(5000, () => {

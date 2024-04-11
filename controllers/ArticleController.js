@@ -68,4 +68,18 @@ router.delete("/delete/:id", (req, res) => {
     });
 });
 
+router.get('/show/:slug', (req, res) => {
+    const slug = req.params.slug;
+
+    Article.findOne({ where: { slug: slug }}).then((article) => {
+        if(article) {
+            res.status(200).json({ article });
+        } else {
+            res.status(201).json({ message: "Artigo não encontrado"});
+        }
+    }).catch((error) => {
+        res.status(401).json({ message: "O orreu um error, tente mais tarde!"});
+    });
+});
+
 module.exports = router;
