@@ -68,18 +68,70 @@ router.delete("/delete/:id", (req, res) => {
     });
 });
 
-router.get('/show/:slug', (req, res) => {
-    const slug = req.params.slug;
+router.get("/show/:slug", (req, res) => {
+  const slug = req.params.slug;
 
-    Article.findOne({ where: { slug: slug }}).then((article) => {
-        if(article) {
-            res.status(200).json({ article });
-        } else {
-            res.status(201).json({ message: "Artigo não encontrado"});
-        }
-    }).catch((error) => {
-        res.status(401).json({ message: "O orreu um error, tente mais tarde!"});
+  Article.findOne({ where: { slug: slug } })
+    .then((article) => {
+      if (article) {
+        res.status(200).json({ article });
+      } else {
+        res.status(201).json({ message: "Artigo não encontrado" });
+      }
+    })
+    .catch((error) => {
+      res.status(401).json({ message: "O orreu um error, tente mais tarde!" });
     });
+});
+
+router.get("/edit/:id", (req, res) => {
+  const id = req.params.id;
+
+  if (id === undefined || isNaN(id)) {
+    res.status(401).json({ message: "Id inválido!" });
+    return;
+  }
+
+  Article.findByPk(id)
+    .then((article) => {
+      res.status(200).json({ article });
+    })
+    .catch((error) => {
+      res.status(401).json({ message: "O orreu um error, tente mais tarde!" });
+    });
+});
+
+router.put("/update", (req, res) => {
+  const { id, title, description, category } = req.body;
+
+  if (title === undefined) {
+    res.send("Digite o título do artigo.");
+    return;
+  }
+
+  if (description === undefined) {
+    res.send("Digite a descrição do artigo.");
+    return;
+  }
+
+  if (category === undefined) {
+    res.send("Selecione uma categoria.");
+    return;
+  }
+
+  const data = {
+    id, 
+    title,
+    slug: slugify(title),
+    description,
+    categoryId: category,
+  };
+
+  Article.update(data, { where: {id: data.id }}).then(() => {
+    res.status(200).json({ message: "Artigo atualizada com sucesso!"});
+  }).catch((error) => {
+    res.status(401).json({ message: "Ocorreu um erro tente mais tarde!"});
+  });
 });
 
 module.exports = router;
