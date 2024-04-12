@@ -1,9 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const User = require('./models/User');
 const Category = require('./models/Category');
 const Article = require('./models/Article');
 
+const UserController = require('./controllers/UserController');
 const CategoryController = require('./controllers/CategoryController');
 const ArticleController = require('./controllers/ArticleController');
 
@@ -21,6 +23,7 @@ app.use(bodyParser.json());
 
 app.use(express.static('public'));
 
+app.use('/users', UserController);
 app.use('/categories', CategoryController);
 app.use('/articles', ArticleController);
 
