@@ -132,4 +132,42 @@ router.delete("/delete/:id", (req, res) => {
     });
 });
 
+router.post("/login", (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email) {
+    res.status(422).json({ message: "O e-mail é obrigatório!" });
+    return;
+  }
+
+  if (!password) {
+    res.status(422).json({ message: "A senha é obrigatório!" });
+    return;
+  }
+
+  User.findOne({ where: { email: email } })
+    .then((user) => {
+      if (user) {
+        const exist = bcryptjs.compare(password, user.password);
+        if (exist) {
+          req.session.user = {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+          };
+          res.status(200).json(req.session.user);
+        } else {
+          res.status(422).json({ message: "Senha inválida" });
+          return;
+        }
+      } else {
+        res.status(422).json({ message: "E-mail não encontrador!" });
+        return;
+      }
+    })
+    .catch((error) => {
+      consolo.log(error);
+    });
+});
+
 module.exports = router;

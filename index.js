@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const session = require('express-session');
 
 const User = require('./models/User');
 const Category = require('./models/Category');
@@ -18,6 +19,14 @@ connection.authenticate().then(() => {
 
 const app = express();
 
+//session
+app.use(session({
+    secret: "mysession",
+    cookie: {
+        maxAge: 86400000 //24h desloga
+    }
+}));
+
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
@@ -35,4 +44,4 @@ app.use('/', (req, res) => {
 
 app.listen(5000, () => {
     console.log("Servidor rodando na porta 5000.");
-})
+});
