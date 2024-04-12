@@ -65,7 +65,20 @@ router.put("/update", (req, res) => {
 });
 
 router.delete("/delete/:id", (req, res) => {
-  res.send("");
+  const id = req.params.id;
+
+  if (id !== undefined && isNaN(id)) {
+    res.status(422).json({ message: "Id inválido" });
+    return;
+  }
+
+  User.destroy({ where: { id: id } })
+    .then(() => {
+      res.status(200).json({ message: "Artigo excluído com sucesso!" });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 });
 
 module.exports = router;
