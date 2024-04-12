@@ -57,11 +57,62 @@ router.post("/store", (req, res) => {
 });
 
 router.get("/edit/:id", (req, res) => {
-  res.send("");
+  const id = req.params.id;
+
+  if (id === undefined || isNaN(id)) {
+    res.status(422).json({ message: "Id inválido!" });
+    return;
+  }
+
+  User.findByPk(id)
+    .then((user) => {
+      res.status(200).json({ user });
+    })
+    .catch((error) => {
+      res.status(422).json({ message: "O orreu um error, tente mais tarde!" });
+    });
 });
 
 router.put("/update", (req, res) => {
-  res.send("");
+  const { id, name, email, password } = req.body;
+
+  if (!name) {
+    res.status(422).json({ message: "O nome é obrigatório!" });
+    return;
+  }
+
+  if (!email) {
+    res.status(422).json({ message: "O e-mail é obrigatório!" });
+    return;
+  }
+
+  const salt = bcryptjs.genSaltSync(10);
+  const hash = bcryptjs.hashSync(password, salt);
+
+  var data;
+
+  if (password) {
+    data = {
+      id,
+      name,
+      email,
+      password: hash,
+    };
+  } else {
+    data = {
+      id,
+      name,
+      email,
+    };
+  }
+
+  User.update(data, { where: { id: data.id } })
+    .then(() => {
+      res.status(200).json({ message: "usuário atualizada com sucesso!" });
+    })
+    .catch((error) => {
+      res.status(422).json({ message: "Ocorreu um erro, tente mais tarde!" });
+    });
 });
 
 router.delete("/delete/:id", (req, res) => {
