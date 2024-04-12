@@ -2,16 +2,18 @@ const express = require("express");
 const Category = require("../models/Category");
 const slugify = require("slugify");
 
+const userAuth = require('../middlewares/userAuth');
+
 const router = express.Router();
 
-router.get("/", (req, res) => {
+router.get("/", userAuth, (req, res) => {
 
   Category.findAll({raw: true}).then((categories) => {
     res.status(200).json({ categories });
   });
 });
 
-router.post("/store", (req, res) => {
+router.post("/store", userAuth, (req, res) => {
   const { title } = req.body;
 
   if (!title) {
@@ -46,7 +48,7 @@ router.delete('/delete/:id', (req, res) => {
   });
 });
 
-router.get('/edit/:id', (req, res) => {
+router.get('/edit/:id', userAuth, (req, res) => {
   const id = req.params.id;
 
   if(id === undefined || isNaN(id)) {
@@ -67,7 +69,7 @@ router.get('/edit/:id', (req, res) => {
   });
 });
 
-router.put('/update', (req, res) => {
+router.put('/update', userAuth, (req, res) => {
   const { id, title } = req.body;
 
   if(id === undefined || isNaN(id)) {

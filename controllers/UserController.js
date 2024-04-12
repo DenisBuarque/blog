@@ -1,9 +1,12 @@
 const express = require("express");
 const bcryptjs = require("bcryptjs");
 const User = require("../models/User");
+
+const userAuth = require('../middlewares/userAuth');
+
 const router = express.Router();
 
-router.get("/", (req, res) => {
+router.get("/", userAuth, (req, res) => {
   User.findAll({ raw: true })
     .then((users) => {
       res.status(200).json({ users });
@@ -13,7 +16,7 @@ router.get("/", (req, res) => {
     });
 });
 
-router.post("/store", (req, res) => {
+router.post("/store", userAuth, (req, res) => {
   const { name, email, password } = req.body;
 
   if (!name) {
@@ -56,7 +59,7 @@ router.post("/store", (req, res) => {
   });
 });
 
-router.get("/edit/:id", (req, res) => {
+router.get("/edit/:id", userAuth, (req, res) => {
   const id = req.params.id;
 
   if (id === undefined || isNaN(id)) {
@@ -73,7 +76,7 @@ router.get("/edit/:id", (req, res) => {
     });
 });
 
-router.put("/update", (req, res) => {
+router.put("/update", userAuth, (req, res) => {
   const { id, name, email, password } = req.body;
 
   if (!name) {
@@ -106,7 +109,7 @@ router.put("/update", (req, res) => {
     };
   }
 
-  User.update(data, { where: { id: data.id } })
+  User.update(data, userAuth, { where: { id: data.id } })
     .then(() => {
       res.status(200).json({ message: "usuário atualizada com sucesso!" });
     })

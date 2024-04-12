@@ -3,10 +3,12 @@ const router = express.Router();
 
 const slugify = require("slugify");
 
+const userAuth = require('../middlewares/userAuth');
+
 const Article = require("../models/Article");
 const Category = require("../models/Category");
 
-router.get("/", (req, res) => {
+router.get("/", userAuth, (req, res) => {
   //Article.findAll({ include:[{ model: Category }], raw: true })
   Article.findAll({ raw: true })
     .then((articles) => {
@@ -17,7 +19,7 @@ router.get("/", (req, res) => {
     });
 });
 
-router.post("/store", (req, res) => {
+router.post("/store", userAuth, (req, res) => {
   const { title, description, category } = req.body;
 
   if (!title) {
@@ -51,7 +53,7 @@ router.post("/store", (req, res) => {
     });
 });
 
-router.delete("/delete/:id", (req, res) => {
+router.delete("/delete/:id", userAuth, (req, res) => {
   const id = req.params.id;
 
   if (id === undefined || isNaN(id)) {
@@ -68,7 +70,7 @@ router.delete("/delete/:id", (req, res) => {
     });
 });
 
-router.get("/show/:slug", (req, res) => {
+router.get("/show/:slug", userAuth, (req, res) => {
   const slug = req.params.slug;
 
   Article.findOne({ where: { slug: slug } })
@@ -85,7 +87,7 @@ router.get("/show/:slug", (req, res) => {
     });
 });
 
-router.get("/edit/:id", (req, res) => {
+router.get("/edit/:id", userAuth, (req, res) => {
   const id = req.params.id;
 
   if (id === undefined || isNaN(id)) {
@@ -102,7 +104,7 @@ router.get("/edit/:id", (req, res) => {
     });
 });
 
-router.put("/update", (req, res) => {
+router.put("/update", userAuth, (req, res) => {
   const { id, title, description, category } = req.body;
 
   if (!title) {
