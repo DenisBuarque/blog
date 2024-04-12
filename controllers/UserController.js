@@ -40,13 +40,20 @@ router.post("/store", (req, res) => {
     password: hash,
   };
 
-  User.create(data)
-    .then(() => {
-      res.status(200).json({ message: "Usuário inserido com sucesso!" });
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  User.findOne({ where: { email: email } }).then((user) => {
+    if (user) {
+      res.status(422).json({ message: "Por favor, ultilize outro e-mail!" });
+      return;
+    } else {
+      User.create(data)
+        .then(() => {
+          res.status(200).json({ message: "Usuário inserido com sucesso!" });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  });
 });
 
 router.get("/edit/:id", (req, res) => {
