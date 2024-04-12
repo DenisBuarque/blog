@@ -20,18 +20,18 @@ router.get("/", (req, res) => {
 router.post("/store", (req, res) => {
   const { title, description, category } = req.body;
 
-  if (title === undefined) {
-    res.send("Digite o título do artigo.");
+  if (!title) {
+    res.status(422).json({message: "Digite o título do artigo."});
     return;
   }
 
-  if (description === undefined) {
-    res.send("Digite a descrição do artigo.");
+  if (!description) {
+    res.status(422).json({message: "Digite a descrição do artigo."});
     return;
   }
 
-  if (category === undefined) {
-    res.send("Selecione uma categoria.");
+  if (!category) {
+    res.status(422).json({message: "Selecione uma categoria."});
     return;
   }
 
@@ -55,7 +55,7 @@ router.delete("/delete/:id", (req, res) => {
   const id = req.params.id;
 
   if (id === undefined || isNaN(id)) {
-    res.status(401).json({ message: "Id inválido!" });
+    res.status(422).json({ message: "Id inválido!" });
     return;
   }
 
@@ -76,11 +76,12 @@ router.get("/show/:slug", (req, res) => {
       if (article) {
         res.status(200).json({ article });
       } else {
-        res.status(201).json({ message: "Artigo não encontrado" });
+        res.status(422).json({ message: "Artigo não encontrado" });
+        return;
       }
     })
     .catch((error) => {
-      res.status(401).json({ message: "O orreu um error, tente mais tarde!" });
+      res.status(401).json({ message: "Ocorreu um error, tente mais tarde!" });
     });
 });
 
@@ -88,7 +89,7 @@ router.get("/edit/:id", (req, res) => {
   const id = req.params.id;
 
   if (id === undefined || isNaN(id)) {
-    res.status(401).json({ message: "Id inválido!" });
+    res.status(422).json({ message: "Id inválido!" });
     return;
   }
 
@@ -104,18 +105,18 @@ router.get("/edit/:id", (req, res) => {
 router.put("/update", (req, res) => {
   const { id, title, description, category } = req.body;
 
-  if (title === undefined) {
-    res.send("Digite o título do artigo.");
+  if (!title) {
+    res.status(422).json({message: "Digite o título do artigo."});
     return;
   }
 
-  if (description === undefined) {
-    res.send("Digite a descrição do artigo.");
+  if (!description) {
+    res.status(422).json({message: "Digite a descrição do artigo."});
     return;
   }
 
   if (category === undefined) {
-    res.send("Selecione uma categoria.");
+    res.status(422).json({message: "Selecione uma categoria."});
     return;
   }
 

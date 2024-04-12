@@ -14,8 +14,8 @@ router.get("/", (req, res) => {
 router.post("/store", (req, res) => {
   const { title } = req.body;
 
-  if (title === undefined) {
-    res.status(401).json({ message: "O título e obrigatório!" });
+  if (!title) {
+    res.status(422).json({ message: "O título e obrigatório!" });
     return;
   }
 
@@ -35,7 +35,7 @@ router.delete('/delete/:id', (req, res) => {
   const id = req.params.id;
 
   if(id === undefined || isNaN(id)) {
-    res.status(401).json({ message: "Id inválido!"});
+    res.status(422).json({ message: "Id inválido!"});
     return;
   }
 
@@ -50,13 +50,13 @@ router.get('/edit/:id', (req, res) => {
   const id = req.params.id;
 
   if(id === undefined || isNaN(id)) {
-    res.status(401).json({ message: "Id inválido!"})
+    res.status(422).json({ message: "Id inválido!"})
     return;
   }
 
   Category.findByPk(id, {raw: true}).then((category) => {
-    if(category == undefined){
-      res.status(401).json({ message: "Categoria não encontrada!"})
+    if(!category){
+      res.status(422).json({ message: "Categoria não encontrada!"})
       return;
     }
 
@@ -75,8 +75,8 @@ router.put('/update', (req, res) => {
     return;
   }
 
-  if (title === undefined) {
-    res.status(401).json({ message: "O título e obrigatório!" });
+  if (!title) {
+    res.status(422).json({ message: "O título e obrigatório!" });
     return;
   }
 
